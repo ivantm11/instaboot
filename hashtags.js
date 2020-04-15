@@ -1,4 +1,4 @@
-const etiquetas = 'best instalove photooftheday awesome love bestanimals bestpet pets_of_our_world pets_perfection petsofinstagram excellent_animals insta_animals animalshots iganimals petslife petslovers petslover animalslover animalsofig animalgram animalprints animalviews animalstagram animalphotography animalsmood animalsaddict animalstyle animaljam animallove animalplanet animal_captures animali animalkingdom animalface petsagram petstagram pets_of_instagram animallovers nature cute animales pets pet animal animals love TagsForLikesApp instagood me smile follow cute photooftheday tbt followme girl beautiful happy picoftheday instadaily food swag amazing TFLers fashion igers fun summer instalike bestoftheday smile like4like friends instamood igglobalclub igphoto ighub igersoftheday ig_worldclub igaddict iger igs igmasters igdaily igers instagrammania instagramphoto instagrames instagrams instagramm instagramdaily instagramaddict instagrammer instagramer instagraphy instagallery instag instagood instagold instagram instagrammers';
+const etiquetas = 'stayhome shotoniphone hotwheels youtube petstagram';
 
 const hashtags = etiquetas.split(' ');
 

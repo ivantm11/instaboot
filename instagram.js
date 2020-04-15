@@ -3,13 +3,18 @@ const puppeteer = require('puppeteer');
 const BASE_URL = 'https://www.instagram.com/'
 const TAG_URL = (tag) => `https://www.instagram.com/explore/tags/${tag}/`
 
+const engStrings = ['Log In', 'Home', 'Like', 'Close']
+const espStrings = ['Iniciar sesión', 'Inicio', 'Me gusta', 'Cerrar']
+
 const instagram = {
     browser: null,
     page: null,
+    buttonStrings: null,
 
-    initialize: async () => {
+    initialize: async (lang) => {
+        instagram.buttonStrings = (lang == 'en' || lang == 'en-US') ? engStrings : espStrings
         instagram.browser = await puppeteer.launch({
-            headless: false
+            headless: false,
         });
         instagram.page = await instagram.browser.newPage()
     },
@@ -24,15 +29,15 @@ const instagram = {
 
         /* Clicking on Log In button */
         await instagram.page.waitFor(2000)
-        let loginButton = await instagram.page.$x('//div[contains(text(), "Log In")]')
+        let loginButton = await instagram.page.$x(`//div[contains(text(), "${instagram.buttonStrings[0]}")]`)
         await loginButton[0].click()
         
         /* Waiting for security code */
         await instagram.page.waitFor(10000)
-        await instagram.page.waitFor('a > svg[aria-label="Home"]')
+        await instagram.page.waitFor(`a > svg[aria-label="${instagram.buttonStrings[1]}"]`)
     },
 
-    likesCerdisimos: async (tags = [], cantPost) => {
+    likearALV: async (tags = [], cantPost) => {
         for(let tag of tags){
             /* Going to the tag page */
             await instagram.page.goto(TAG_URL(tag), { waitUtil: 'networkidle2' })
@@ -49,14 +54,14 @@ const instagram = {
                 await instagram.page.waitFor(500)
 
                 /* Like to the post */
-                let isLikeable = await instagram.page.$('svg[aria-label="Like"]')
+                let isLikeable = await instagram.page.$(`svg[aria-label="${instagram.buttonStrings[2]}"]`)
                 if(isLikeable) {
-                    await instagram.page.click('svg[aria-label="Like"]')
+                    await instagram.page.click(`svg[aria-label="${instagram.buttonStrings[2]}"]`)
                 }
                 await instagram.page.waitFor(500)
 
                 /* Closing the image */
-                let closeButton = await instagram.page.$('button[type="button"] > svg[aria-label="Close"]')
+                let closeButton = await instagram.page.$(`button[type="button"] > svg[aria-label="${instagram.buttonStrings[3]}"]`)
                 await closeButton.click()
                 await instagram.page.waitFor(500)
             }
@@ -67,6 +72,7 @@ const instagram = {
     alv: async () => {
         instagram.page.close()
         instagram.browser.close()
+        console.log('Fin :)')
     }
 
 }
