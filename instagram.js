@@ -7,9 +7,12 @@ const engStrings = ['Log In', 'Home', 'Like', 'Close']
 const espStrings = ['Iniciar sesión', 'Inicio', 'Me gusta', 'Cerrar']
 
 const instagram = {
-    browser: null,
     page: null,
+    browser: null,
     buttonStrings: null,
+
+    errores: 0,
+    cantLikes: 0,
 
     initialize: async (lang) => {
         instagram.buttonStrings = (lang == 'en' || lang == 'en-US') ? engStrings : espStrings
@@ -38,33 +41,47 @@ const instagram = {
     },
 
     likearALV: async (tags = [], cantPost) => {
+        instagram.cantLikes = tags.length * cantPost
         for(let tag of tags){
-            /* Going to the tag page */
-            await instagram.page.goto(TAG_URL(tag), { waitUtil: 'networkidle2' })
-            await instagram.page.waitFor(1500)
+            try{
+                /* Going to the tag page */
+                await instagram.page.goto(TAG_URL(tag), { waitUtil: 'networkidle2' })
+                await instagram.page.waitFor(1500)
+    
+                let postImages = await instagram.page.$$('article > div:nth-child(3) img[decoding="auto"]')
+                for(let i=0; i<cantPost; i++){
+                    let post = postImages[i]
+    
+                    try{
+                        /* Clicking the post */
+                        await post.click()
+        
+                        /* Waiting for the image in all the screen */
+                        await instagram.page.waitFor('body[style="overflow: hidden;"]')
+                        await instagram.page.waitFor(500)
+        
+                        /* Like to the post */
+                        let isLikeable = await instagram.page.$(`svg[aria-label="${instagram.buttonStrings[2]}"]`)
+                        if(isLikeable) {
+                            await instagram.page.click(`svg[aria-label="${instagram.buttonStrings[2]}"]`)
+                        }
+                        await instagram.page.waitFor(500)
+        
+                        /* Closing the image */
+                        let closeButton = await instagram.page.$(`button[type="button"] > svg[aria-label="${instagram.buttonStrings[3]}"]`)
+                        await closeButton.click()
+                    } catch {
+                        console.log('Hubo un error al likear esta foto, pasemos a la siguiente')
+                        instagram.errores++
+                    }
 
-            let postImages = await instagram.page.$$('article > div:nth-child(3) img[decoding="auto"]')
-            for(let i=0; i<cantPost; i++){
-                let post = postImages[i]
-                /* Clicking the post */
-                await post.click()
-
-                /* Waiting for the image in all the screen */
-                await instagram.page.waitFor('body[style="overflow: hidden;"]')
-                await instagram.page.waitFor(500)
-
-                /* Like to the post */
-                let isLikeable = await instagram.page.$(`svg[aria-label="${instagram.buttonStrings[2]}"]`)
-                if(isLikeable) {
-                    await instagram.page.click(`svg[aria-label="${instagram.buttonStrings[2]}"]`)
+                    await instagram.page.waitFor(500)
                 }
-                await instagram.page.waitFor(500)
-
-                /* Closing the image */
-                let closeButton = await instagram.page.$(`button[type="button"] > svg[aria-label="${instagram.buttonStrings[3]}"]`)
-                await closeButton.click()
-                await instagram.page.waitFor(500)
+            } catch{
+                console.log(`Hubo un error al cargar el tag: ${tag}, pasemos al siguiente`)
+                instagram.errores++
             }
+
             await instagram.page.waitFor(1000)
         }
     },
@@ -72,6 +89,7 @@ const instagram = {
     alv: async () => {
         instagram.page.close()
         instagram.browser.close()
+        console.log(`Errores encontrados ${instagram.errores} de ${instagram.cantLikes} posts`)
         console.log('Fin :)')
     }
 

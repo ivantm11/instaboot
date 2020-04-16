@@ -6,7 +6,7 @@ const user = credentials[0];
 const pass = credentials[1];
 const tags = hashtags;
 const cantPosts = 7;
-const lang = 'es';
+const lang = 'en';
 
 (async () => {
     await insta.initialize(lang)
