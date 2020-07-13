@@ -108,8 +108,8 @@ const instagram = {
   },
 
   alv: async () => {
-    instagram.page.close();
-    instagram.browser.close();
+    await instagram.page.close();
+    await instagram.browser.close();
     console.log(
       `Errores encontrados ${instagram.errores} de ${instagram.cantLikes} posts`
     );
