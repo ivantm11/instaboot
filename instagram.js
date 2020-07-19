@@ -81,12 +81,13 @@ const instagram = {
               );
             }
             await instagram.page.waitFor(500);
-
+            debugger
             /* Closing the image */
             let closeButton = await instagram.page.$(
-              `button[type="button"] > svg[aria-label="${instagram.buttonStrings[3]}"]`
+              `button[type="button"] > div > svg[aria-label="${instagram.buttonStrings[3]}"]`
             );
             await closeButton.click();
+
           } catch {
             console.log(
               "Hubo un error al likear esta foto, pasemos a la siguiente"
