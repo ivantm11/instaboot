@@ -81,7 +81,7 @@ const instagram = {
               );
             }
             await instagram.page.waitFor(500);
-            debugger
+            
             /* Closing the image */
             let closeButton = await instagram.page.$(
               `button[type="button"] > div > svg[aria-label="${instagram.buttonStrings[3]}"]`
